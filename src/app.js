@@ -5,13 +5,20 @@ const json = require("koa-json");
 const onerror = require("koa-onerror");
 const bodyparser = require("koa-bodyparser");
 const logger = require("koa-logger");
+const { isProd, isTest } = require("./utils/env");
 
 const index = require("./routes/index");
 const users = require("./routes/users");
 const errorViewRouter = require("./routes/view/error");
 
 // error handler
-onerror(app);
+let onerrorConf = {};
+if (isProd) {
+  onerrorConf = {
+    redirect: "/error",
+  };
+}
+onerror(app, onerrorConf);
 
 // middlewares
 app.use(
